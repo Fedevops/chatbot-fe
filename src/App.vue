@@ -1,20 +1,6 @@
 <template>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-  <div class="overlay" v-if="showForm"></div>
-  <!-- Modal de login -->
-  <!-- <div>
-    <button @click="isModalOpen = true">Show Modal</button>
-    <Modal v-model:visible="isModalOpen" @update:visible="isModalOpen = false">
-      <template #header>
-        <h2>Login</h2>
-      </template>
-      <fb:login-button 
-        scope="public_profile,email"
-        @login="checkLoginState">
-      </fb:login-button>
-      <button @click="loginWithGoogle">Login com Google</button>
-    </Modal>
-  </div> -->
+  
   <div id="app">
     <!-- Menu inicial onde tem dois botões: Chat ou cadastrar novas perguntas -->
     <div class="menu">
@@ -23,15 +9,18 @@
         <!-- <button class="btn-secondary" @click="toggleForm">Login</button> -->
     </div>
     <!-- Modal onde você pode conversar com o bot -->
-    <div class="chat-container">
+    <div class="container">
+      <div class="chat-header">
+        Chat com o BOT
+      </div> 
       <div class="messages" ref="messageBox">
         <div v-for="msg in messages" :key="msg.id" :class="`message ${msg.type}`">
           <span v-if="msg.type === 'bot'">🤖 diz: &nbsp;<br></span> {{ msg.text }}
         </div>
       </div>
-      <div class="input-container">
-        <input v-model="userInput" @keyup.enter="sendMessage" placeholder="Digite sua mensagem..." />
-        <button @click="sendMessage">Enviar</button>
+      <div class="input-box">
+        <input v-model="userInput" id="messageInput" @keyup.enter="sendMessage" placeholder="Digite sua mensagem...">
+        <button @click="sendMessage">&#10148;</button>
       </div>
       <div class="exit-label"> Escreva "sair" para abandonar o chat...</div>
       <!-- Modal onde posso cadastrar novas perguntas -->
@@ -132,22 +121,7 @@ export default {
     mounted() {
     this.sendMessage('Olá, seja bem vindo, em que posso ajudar você hoje?'); 
     },
-    // checkLoginState() {
-    //   FB.getLoginStatus(response => {
-    //     if (response.status === 'connected') {
-    //       // O usuário está logado e autenticado
-    //       // Você pode, por exemplo, guardar o token de acesso e obter informações do usuário
-    //       this.getUserInfo(response.authResponse.accessToken);
-    //     } else {
-    //       // O usuário não está logado no Facebook ou não deu permissão
-    //     }
-    //   });
-    // },
-    // getUserInfo(accessToken) {
-    //   FB.api('/me', {fields: 'id,name,email'}, response => {
-    //     console.log(response);
-    //     // Faça algo com as informações do usuário, por exemplo, guardar no vuex ou local storage
-    //   });
+   
     scrollToBottom() {
         this.$nextTick(() => {
             if (this.$refs.messageBox) {
@@ -164,12 +138,39 @@ export default {
 
 <style scoped>
 
+button {
+  padding: 10px 15px;
+  border: none;
+  background-color: #39ff14; 
+  color: #f0f0f0;
+  cursor: pointer;
+  border-radius: 0 4px 4px 0;
+  transition: background-color 0.3s; 
+}
+
+button:hover {
+  background-color: #2eb80e;  
+}
+
 body, html {
     font-family: Arial, sans-serif;
-    color: #f0f0f0;  /* Cor de texto clara para contraste */
-    body, html {
+    color: #f0f0f0;  
     background-color: #1a1a1d !important;
+    margin: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
 }
+
+body {
+    background-image: url('~@/assets/Stories 9.png');
+    background-size: cover; 
+    background-position: center center; 
+    background-attachment: fixed;
+    height: 100%;
+    margin: 10;
 }
 
 footer {
@@ -182,6 +183,39 @@ footer {
     width: 100%;
     font-size: 0.9em;
 }
+
+.container {
+    height: 80vh;  
+    display: flex;  
+    flex-direction: column; 
+    max-width: 900px;
+    width: 900%;
+    margin-top: 50px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: #222;
+    position: fixed;
+    bottom: 8%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-image: url('~@/assets/Stories 9.png');
+    background-size: cover;
+    background-position: center center; 
+    height: 80%;
+    margin: 10;
+  }
+
+  .chat-header {
+    padding: 10px 15px;
+    background-color: #333;
+    color: #777777; 
+    font-weight: bold;
+    border-top-left-radius: 5px; 
+    border-top-right-radius: 5px;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  }
+
 .exit-label {
   font-family: 'Roboto', sans-serif;
   color: grey;
@@ -197,17 +231,26 @@ footer {
 }
 
 .messages {
-  max-height: 400px;
   overflow-y: auto;
   font-family: 'Roboto', sans-serif;
   color: grey;
   font-size: 13px;
+  flex: 1;
+  padding: 10px;
+  height: 200px;
+  border-bottom: 1px solid #ccc;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  max-height: 80vh;
+  flex-grow: 1;
+
 }
 
 .message {
-  padding: 10px;
+  padding: 5px 10px;
   margin: 5px 0;
-  border-radius: 8px;
+  border-radius: 5px;
 }
 
 
@@ -223,8 +266,31 @@ footer {
 }
 
 .input-container {
+  position: relative;
   display: flex;
   margin-top: 10px;
+  align-items: center;
+  width: 100%;
+}
+
+#messageInput {
+  width: calc(100% - 40px); /* reduzimos a largura do input para acomodar o botão */
+  padding: 10px; /* dê um pouco de padding */
+  border: 1px solid #ccc; 
+  border-radius: 4px; /* dê um pouco de border-radius se desejar */
+  outline: none; /* remove o contorno ao focar */
+}
+
+#sendButton {
+  position: absolute;
+  right: 5px; /* ajuste conforme necessário */
+  top: 50%;
+  transform: translateY(-50%); 
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  outline: none;
 }
 
 input {
@@ -254,7 +320,7 @@ button {
   gap: 20px;
 }
 
-.menu button {
+.menu button .field button {
   padding: 10px 20px;
   font-size: 16px;
   border: none;
@@ -273,13 +339,20 @@ button {
 .form-container {
     font-family: 'Roboto', sans-serif;
     width: 400px;
-    background-color: #ffffff;
+    background-color: #2c2c2e;  /* fundo escuro */
     padding: 20px 40px;
     margin-top: 20px;
     border-radius: 10px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    z-index: 2000; 
+    z-index: 2000;
     position: relative;
+    color: #f0f0f0;  /* Cor de texto clara para contraste */
+}
+
+.form-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #ffffff;
 }
 
 .field {
@@ -293,7 +366,7 @@ button {
   color: #545252;
 }
 
-.field_input {
+.field_input[type="text"] {
     width: 100%;
     padding: 10px;
     font-size: 16px;
@@ -319,14 +392,29 @@ button {
     background-color: rgba(0, 0, 0, 0.5); /* Preto semi-transparente */
     z-index: 1000; /* Certifique-se de que o z-index seja suficientemente alto para cobrir outros elementos */
 }
-.btn-cancel {
-    background-color: red;
-    color: #ffffff;
-    border: 1px solid #ccc;
+
+.btn-primary {
+    background-color: #007bff;
+    color: white;
     padding: 10px 15px;
-    margin-left: 10px;
+    border: none;
+    border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s, transform 0.3s;
+    transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+.btn-cancel {
+    background-color: #d9534f;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-left: 10px;
 }
 
 .btn-cancel:hover {
@@ -335,10 +423,10 @@ button {
 }
 
 .message {
-  padding: 12px 16px;
-  margin: 10px;
-  border-radius: 15px;
-  max-width: 80%;
+  padding: 5px 10px;
+  margin: 5px 0;
+  border-radius: 5px;
+  font-size: 18px;
 }
 
 .message.user {
@@ -355,5 +443,20 @@ button {
   display: flex;
   align-items: center;  /* Alinhar verticalmente o texto e o emoji */
 }
+
+.input-box {
+    padding: 10px;  /* Espaçamento interno para a caixa de entrada */
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 97%;
+}
+
+.input-box input, .input-box textarea {
+    width: 100%;  /* Ocupa 100% da largura disponível */
+    padding: 8px;  /* Espaçamento interno para o texto */
+    box-sizing: border-box;  /* Garante que o padding não aumente o tamanho total do input */
+    font-size: 18px;
+  }
 
 </style>
